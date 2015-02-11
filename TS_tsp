@@ -18,7 +18,7 @@ import math
 n_tl = 2
 
 # Max time in seconds
-max_time = 10
+max_time = 100
 
 for v in range(0, 40):
     # The path of every instance is placed here
