@@ -598,11 +598,9 @@ def gonDom2W(s):
 
 ################################ BEGINNING OF THE CODE ################################################################
 
+# We text the algorithm over the set of 40 small instances from TSP-Lib
 for v in range(0, 40):
-    #print("Loading input...")
-    # Open the selected file
-    #f = open('/home/jgd/ORLib/u1817_5.txt', 'r')
-    #f = open('/home/jgd/ORLib/pmed11.txt', 'r')
+    # The path of every instance is placed here
     if v < 4:
         f = open('/home/jgd/ORLib/kroA200.txt', 'r')
     if 4 <= v < 8:
@@ -623,8 +621,6 @@ for v in range(0, 40):
         f = open('/home/jgd/ORLib/d493.txt', 'r')
     if 36 <= v < 40:
         f = open('/home/jgd/ORLib/d657.txt', 'r')
-    #target = 93
-    #OPT:
     target = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
               0, 0, 0, 0, 0]
     #target = [911.4120, 598.8196, 389.3070, 258.2595, 19.3845, 9.3340, 5.5656, 2.9713, 3720.5510, 2326.4780, 1365.6500,
@@ -636,13 +632,14 @@ for v in range(0, 40):
     #          743.2107, 501.8177, 315.9193, 3196.5803, 1971.83291, 1185.5906, 671.7515, 1024.7439, 670.8204, 454.8627,
     #          316.2278, 752.9085, 458.3046, 318.5144, 207.3192, 880.9086, 584.75192, 375.49397, 255.9408]
 
+
+    # Setting up the instance (BEGIN)***************************************************************
     # Get the values of n, m and k
     str = f.readline()
     str = str.split()
     n = int(str[0])
     m = int(str[1])
     k = int(str[2])
-
     # Fill the Adjacencies Matrix
     matrix = []
     for i in range(0,n):
@@ -650,8 +647,6 @@ for v in range(0, 40):
         for j in range(0,n):
             list.append(float("inf"))
         matrix.append(list)
-
-
     for i in range(0, m):
         str = f.readline()
         str = str.split()
@@ -660,8 +655,6 @@ for v in range(0, 40):
         weight = float(str[2])
         matrix[v1][v2] = weight
         matrix[v2][v1] = weight
-
-
     # Apply the Floyd-Marshal algorithm
     for i in range(0, n):
         matrix[i][i] = 0
@@ -674,8 +667,6 @@ for v in range(0, 40):
                     cost = matrix[i][j] + matrix[i][l]
                 if cost < matrix[j][l]:
                     matrix[j][l] = cost
-    #print("Input load")
-
     if v%4 == 0:
         k = 5
     if v%4 == 1:
@@ -684,8 +675,8 @@ for v in range(0, 40):
         k = 20
     if v%4 == 3:
         k = 40
-
     f.close()
+    # Setting up the instance (END)***************************************************************
 
     # Order the set of possible solution sizes
     ordered_sizes = []
@@ -694,28 +685,7 @@ for v in range(0, 40):
             ordered_sizes.append(matrix[i][j])
     ordered_sizes = heap_sort(ordered_sizes)
 
-
-
-    #for i in range(0, len(ordered_sizes)):
-    #    for j in range(i, len(ordered_sizes)):
-    #        if ordered_sizes[i] > ordered_sizes[j]:
-    #            temp = ordered_sizes[i]
-    #            ordered_sizes[i] = ordered_sizes[j]
-    #            ordered_sizes[j] = temp
-#    ordered_sizes = []
-#    max_size = 0
-#    for i in range(0, n):
-#        for j in range(i, n):
-#            if matrix[i][j] > max_size:
-#                max_size = matrix[i][j]
-#    for i in range(0, int(math.ceil(max_size))):
-#        ordered_sizes.append(i)
-
-
-
-    # The output will be written in a text file
-    out = open("output", "w")
-
+    # The algorithm can be executed over every instance any number of times with a different seed
     #print("*************************************************************************************************")
     #print("100 executions of pmed" + repr(v) + ": ")
     # SdR-DS
@@ -736,52 +706,50 @@ for v in range(0, 40):
         ds_time = 0
         ls_time = 0
 
-        # A Gon solution or evaluation
-        #Evaluation (where to move)
+        # A 2-approximated Gon solution is generated for evaluation
         list = gon()
         best_known_size = list[0]
         C = list[1]
+        gon_sol = list[1]
 
+        # Initializing the binary search
         upper = len(ordered_sizes) - 1
         lower = 0
-
-        #print("Start first search")
+        mid = math.floor(lower + ((upper - lower)/2))
         not_done = True
+
         while not_done:
+            # Computing the mid value
             mid = math.floor(lower + ((upper - lower)/2))
             mid_value = ordered_sizes[int(mid)]
             upper_value = ordered_sizes[int(upper)]
             lower_value = ordered_sizes[int(lower)]
+            # Computing the cardinality of every vertex over the pruned input graph
             cardinality_size(mid_value)
             init_ds_time = timeit.default_timer()
+            # Executing the Critical Dominating Set algorithm
             ds = dominating_set(ordered_sizes[int(mid)])
             ds_time = ds_time + (timeit.default_timer() - init_ds_time)
             size = ds[0]
+            # If the new solution is better than the previous best one, substitute them
             if size <= best_known_size:
                 C = ds[1]
-
+            if size <= best_known_size:
+                best_known_size = size
+            # If the algorithm has already found the target, the algorithm has finished
+            if best_known_size <= target[v-1]:
+                break
+            # This condition is met when the binary search finishes
             if lower == mid and upper == lower + 1:
                 not_done = False
 
-            if size <= best_known_size:
-                best_known_size = size
-            if best_known_size <= target[v]:
-                break
-
-
+            # Determine where to move on the binary search
             if best_known_size <= mid_value:
                 upper = mid
             else:
-                #if not gonDomSqrGraph(mid_value):
                 if not gonDom2W(mid_value):
                     lower = mid
                 else:
                     upper = mid
-
-        #print( repr(ds_time + ls_time))
-        #print("DS time: " + repr(ds_time))
-        #print("LS time: " + repr(ls_time))
+        #Print the best size found
         print(best_known_size)
-        #out.write('{} \n'.format(best_known_size))
-
-    out.close()
