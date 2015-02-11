@@ -661,7 +661,7 @@ for v in range(1, 41):
     ordered_sizes = heap_sort(ordered_sizes)
 
 
-    # Te algorithm can be executed over every instance any number of times with a different seed
+    # The algorithm can be executed over every instance any number of times with a different seed
     #print("*************************************************************************************************")
     #print("100 executions of pmed" + repr(v) + ": ")
     for h in range(0, 1):
