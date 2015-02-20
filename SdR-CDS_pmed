@@ -3,6 +3,7 @@ import datetime
 import timeit
 import math
 import heapq
+import os
 
 ################### FUNCTIONS ##############################################################
 
@@ -604,8 +605,9 @@ def gonDom2W(s):
 
 # We text the algorithm over the set of 40 instances pmed from OR-Lib
 for v in range(1, 41):
+    cwd = os.getcwd()
     # The path of every instance is placed here (pmed1, pmed2,..., pmed40)
-    f = open('/home/jgd/ORLib/pmed' + repr(v) + '.txt', 'r')
+    f = open(cwd + '/Lib/pmed' + repr(v) + '.txt', 'r')
     # These target values are the optimal solutions' size
     target = [127, 98, 93, 74, 48, 84, 64, 55, 37, 20, 59, 51, 35, 26, 18, 47, 39, 28, 18, 13, 40, 38, 22, 15, 11, 38,
               32, 18, 13, 9, 30, 29, 15, 11, 30, 27, 15, 29, 23, 13]

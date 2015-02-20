@@ -2,6 +2,7 @@ import random
 import datetime
 import timeit
 import math
+import os
 
 
 ################### FUNCTIONS ##############################################################
@@ -21,9 +22,9 @@ n_tl = 2
 max_time = 100
 
 for v in range(1, 41):
-
+    cwd = os.getcwd()
     #print("Loading input...")
-    f = open('/home/jgd/ORLib/pmed' + repr(v) + '.txt', 'r')
+    f = open(cwd + '/Lib/pmed' + repr(v) + '.txt', 'r')
     target = [127, 98, 93, 74, 48, 84, 64, 55, 37, 20, 59, 51, 35, 26, 18, 47, 39, 28, 18, 13, 40, 38, 22, 15, 11, 38,
               32, 18, 13, 9, 30, 29, 15, 11, 30, 27, 15, 29, 23, 13]
 

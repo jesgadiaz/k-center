@@ -3,6 +3,7 @@ import datetime
 import timeit
 import math
 import heapq
+import os
 
 ################### FUNCTIONS ##############################################################
 
@@ -600,27 +601,28 @@ def gonDom2W(s):
 
 # We text the algorithm over the set of 40 small instances from TSP-Lib
 for v in range(0, 40):
+    cwd = os.getcwd()
     # The path of every instance is placed here
     if v < 4:
-        f = open('/home/jgd/ORLib/kroA200.txt', 'r')
+        f = open(cwd + '/Lib/kroA200.txt', 'r')
     if 4 <= v < 8:
-        f = open('/home/jgd/ORLib/gr202.txt', 'r')
+        f = open(cwd + '/Lib/gr202.txt', 'r')
     if 8 <= v < 12:
-        f = open('/home/jgd/ORLib/pr226.txt', 'r')
+        f = open(cwd + '/Lib/pr226.txt', 'r')
     if 12 <= v < 16:
-        f = open('/home/jgd/ORLib/pr264.txt', 'r')
+        f = open(cwd + '/Lib/pr264.txt', 'r')
     if 16 <= v < 20:
-        f = open('/home/jgd/ORLib/pr299.txt', 'r')
+        f = open(cwd + '/Lib/pr299.txt', 'r')
     if 20 <= v < 24:
-        f = open('/home/jgd/ORLib/lin318.txt', 'r')
+        f = open(cwd + '/Lib/lin318.txt', 'r')
     if 24 <= v < 28:
-        f = open('/home/jgd/ORLib/pr439.txt', 'r')
+        f = open(cwd + '/Lib/pr439.txt', 'r')
     if 28 <= v < 32:
-        f = open('/home/jgd/ORLib/pcb442.txt', 'r')
+        f = open(cwd + '/Lib/pcb442.txt', 'r')
     if 32 <= v < 36:
-        f = open('/home/jgd/ORLib/d493.txt', 'r')
+        f = open(cwd + '/Lib/d493.txt', 'r')
     if 36 <= v < 40:
-        f = open('/home/jgd/ORLib/d657.txt', 'r')
+        f = open(cwd + '/Lib/d657.txt', 'r')
     #target = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     #          0, 0, 0, 0, 0]
     #target = [911.4120, 598.8196, 389.3070, 258.2595, 19.3845, 9.3340, 5.5656, 2.9713, 3720.5510, 2326.4780, 1365.6500,
