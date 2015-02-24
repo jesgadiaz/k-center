@@ -311,7 +311,7 @@ def interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], j])
                     elif M[current_sol[m]] < C:
-                        L = []
+                        L.clear()
                         L.append([current_sol[m], j])
                         C = M[current_sol[m]]
             Sc = removeFacility(j, current_sol)
@@ -394,7 +394,7 @@ def critical_interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], critical_neighbors[j]])
                     elif M[current_sol[m]] < C:
-                        L = []
+                        L.clear()
                         L.append([current_sol[m], critical_neighbors[j]])
                         C = M[current_sol[m]]
             Sc = removeFacility(critical_neighbors[j], current_sol)

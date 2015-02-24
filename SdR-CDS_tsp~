@@ -7,7 +7,7 @@ import os
 
 ################### FUNCTIONS ##############################################################
 
-# Get the cardinality of every vertex using best_known_size for the pruning
+# Cardinality function
 def cardinality():
     global card
     card = []
@@ -19,7 +19,7 @@ def cardinality():
                 card[i] += 1
 
 
-# Get the cardinality of every vertex using an input size for the pruning
+# Cardinality function
 def cardinality_size(size):
     global card
     card = []
@@ -30,7 +30,7 @@ def cardinality_size(size):
             if matrix[i][j] <= size:
                 card[i] += 1
 
-# Update Cardinality (i.e. do not take into account the previously dominated vertices)
+# Update Cardinality function
 def update_cardinality(centers, max_index, s):
     global dominated
     global card
@@ -49,7 +49,7 @@ def update_cardinality(centers, max_index, s):
                 if matrix[j][i] <= s:
                     card[j] -= 1
 
-# Update Distance. Get the distance from every vertex to its nearest center in the partial solution
+# Update Distance function
 def update_distance(centers, max_index):
     global distance
     for i in range(0, n):
@@ -67,7 +67,7 @@ def farthest_node():
             max_dist_node = i
     return max_dist_node
 
-# Get the set of critical neighbors
+# Get the critical neighbors
 def get_critical_neighbors(node, s):
     l = []
     for i in range(0, n):
@@ -75,7 +75,7 @@ def get_critical_neighbors(node, s):
             l.append(i)
     return l
 
-# Get the maximum cardinality vertex
+# Get the maximum cardinality element
 def max_cardinality(l):
     max_card = 0
     max_card_node = 0
@@ -86,7 +86,7 @@ def max_cardinality(l):
             max_card_node = i
     return max_card_node
 
-# Get the solution size of the currently constructed solution
+# Get the solution size of a given solution
 def solution_size():
     max_dist = 0
     global distance
@@ -95,21 +95,25 @@ def solution_size():
             max_dist = distance[i]
     return max_dist
 
-# Critical Dominating Set heuristic
+# Dominating Set heuristic
 def dominating_set(s):
     C = []
+    max_card = 0
+    max_card_node = 0
     global card
     global dominated
     global distance
     global prob
     dominated = []
     distance = []
+    recently_dominated = []
     for i in range(0,n):
         dominated.append(False)
         distance.append(float("inf"))
     critical_neighbors = get_critical_neighbors(random.randint(0, n-1), s)
     if random.random() <= prob:
         C.append(max_cardinality(critical_neighbors))
+        #C.append(max_card_node)
     else:
         C.append(random.randint(0,n-1))
     update_distance(C, 0)
@@ -126,8 +130,6 @@ def dominating_set(s):
     return out
 
 
-
-# This function generates a 2-approximated solution with the Gon algorithm
 def gon():
     C = []
     global distance
@@ -147,7 +149,7 @@ def gon():
 
 
 
-# Get the critical (farthest) node
+    # Get the critical node
 def criticalNode(C):
     max_dist = 0
     farthest_node = 0
@@ -161,7 +163,7 @@ def criticalNode(C):
             farthest_node = i
     return farthest_node
 
-# Make the boolean version of the input solution
+    # Make the boolean version of the input solution
 def getCurrentBoolean(in_sol):
     l = []
     for i in range(0, n):
@@ -170,7 +172,7 @@ def getCurrentBoolean(in_sol):
         l[in_sol[i]] = True
     return l
 
-# Get First and Second closest centers
+    # Get First and Second closest centers
 def firstAndSecond(in_sol):
     global F0
     global F1
@@ -202,7 +204,7 @@ def firstAndSecond(in_sol):
                 F1[i] = in_sol[j]
                 D1[i] = min_dist
 
-# Add facility to current solution
+    # Add facility to current solution
 def addFacility(f):
     global F0
     global F1
@@ -222,7 +224,7 @@ def addFacility(f):
             Sc = D0[i]
     return Sc
 
-# Remove facility to current solution
+    # Remove facility to current solution
 def removeFacility(f, current_sol):
     global F0
     global F1
@@ -240,7 +242,7 @@ def removeFacility(f, current_sol):
             Sc = D0[i]
     return Sc
 
-# Find Next function
+    # Find Next function
 def findNext(f, current_sol):
     min_dist = float("inf")
     global D1
@@ -252,7 +254,7 @@ def findNext(f, current_sol):
                 min_dist = matrix[current_sol[i]][f]
                 D1[f] = min_dist
 
-# Clean M array
+    # Clean M array
 def cleanMarray():
     global M
     M = []
@@ -260,7 +262,7 @@ def cleanMarray():
         M.append(0)
 
 
-# Critical Interchange heuristic
+    # Critical Interchange heuristic
 def interchange(in_sol, bks, current_size):
     cardinality()
     current_sol = []
@@ -311,7 +313,7 @@ def interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], j])
                     elif M[current_sol[m]] < C:
-                        L = []
+                        L.clear()
                         L.append([current_sol[m], j])
                         C = M[current_sol[m]]
             Sc = removeFacility(j, current_sol)
@@ -336,7 +338,7 @@ def interchange(in_sol, bks, current_size):
             best_known_size = best_size
             #print(best_known_size)
             cardinality()
-        if best_known_size <= target[v-1]:
+        if best_known_size <= target[v]:
             break
     return best_known_size
 
@@ -394,7 +396,7 @@ def critical_interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], critical_neighbors[j]])
                     elif M[current_sol[m]] < C:
-                        L = []
+                        L.clear()
                         L.append([current_sol[m], critical_neighbors[j]])
                         C = M[current_sol[m]]
             Sc = removeFacility(critical_neighbors[j], current_sol)
@@ -419,7 +421,7 @@ def critical_interchange(in_sol, bks, current_size):
             best_known_size = best_size
             #print(best_known_size)
             cardinality()
-        if best_known_size <= target[v-1]:
+        if best_known_size <= target[v]:
             break
     return best_known_size
 
@@ -543,21 +545,18 @@ def fix_dominating_set(in_sol, bks, current_size):
         if best_size < best_known_size:
             best_known_size = best_size
             cardinality()
-        if best_known_size <= target[v-1]:
+        if best_known_size <= target[v]:
             break
         print(repr(current_size))
     print("End of local search")
     return best_known_size
 
-
-# Orders the set of edges' cost
 def heap_sort(items):
     """ Implementation of heap sort """
     heapq.heapify(items)
     items[:] = [heapq.heappop(items) for i in range(len(items))]
     return items
 
-# Check if a 2-approximated solution is a dominating set in G^2
 def gonDomSqrGraph(s):
     checked = []
     dom = []
@@ -565,7 +564,7 @@ def gonDomSqrGraph(s):
         checked.append(False)
         dom.append(False)
     dom_cnt = 0
-    for i in gon_sol:
+    for i in C:
         for j in range(0, n):
             if not checked[j]:
                 if matrix[i][j] <= s:
@@ -582,7 +581,6 @@ def gonDomSqrGraph(s):
         return False
 
 
-# Check if a 2-approximated solution is a dominating set in G_2W
 def gonDom2W(s):
     checked = []
     dom_cnt = 0
@@ -599,21 +597,42 @@ def gonDom2W(s):
     else:
         return False
 
-
-
 ################################ BEGINNING OF THE CODE ################################################################
 
-# We text the algorithm over the set of 40 instances pmed from OR-Lib
-for v in range(1, 41):
+# We text the algorithm over the set of 40 small instances from TSP-Lib
+for v in range(0, 40):
     cwd = os.getcwd()
-    # The path of every instance is placed here (pmed1, pmed2,..., pmed40)
-    f = open(cwd + '/Lib/pmed' + repr(v) + '.txt', 'r')
-    # These target values are the optimal solutions' size
-    target = [127, 98, 93, 74, 48, 84, 64, 55, 37, 20, 59, 51, 35, 26, 18, 47, 39, 28, 18, 13, 40, 38, 22, 15, 11, 38,
-              32, 18, 13, 9, 30, 29, 15, 11, 30, 27, 15, 29, 23, 13]
-    #target = [127, 98, 93, 74, 48, 84, 64, 55, 37, 20, 59, 51, 36, 26, 18, 47, 39, 29, 19, 14, 40, 38, 23, 15, 11, 38,
-    #          32, 19, 13, 10, 30, 30, 16, 11, 30, 28, 16, 29, 24, 14]
-
+    # The path of every instance is placed here
+    if v < 4:
+        f = open(cwd + '/Lib/kroA200.txt', 'r')
+    if 4 <= v < 8:
+        f = open(cwd + '/Lib/gr202.txt', 'r')
+    if 8 <= v < 12:
+        f = open(cwd + '/Lib/pr226.txt', 'r')
+    if 12 <= v < 16:
+        f = open(cwd + '/Lib/pr264.txt', 'r')
+    if 16 <= v < 20:
+        f = open(cwd + '/Lib/pr299.txt', 'r')
+    if 20 <= v < 24:
+        f = open(cwd + '/Lib/lin318.txt', 'r')
+    if 24 <= v < 28:
+        f = open(cwd + '/Lib/pr439.txt', 'r')
+    if 28 <= v < 32:
+        f = open(cwd + '/Lib/pcb442.txt', 'r')
+    if 32 <= v < 36:
+        f = open(cwd + '/Lib/d493.txt', 'r')
+    if 36 <= v < 40:
+        f = open(cwd + '/Lib/d657.txt', 'r')
+    #target = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #          0, 0, 0, 0, 0]
+    #target = [911.4120, 598.8196, 389.3070, 258.2595, 19.3845, 9.3340, 5.5656, 2.9713, 3720.5510, 2326.4780, 1365.6500,
+    #          650.0000, 1610.1242, 850.0000, 514.7815, 316.2277, 1336.2728, 888.8357, 559.016994, 355.3167, 1101.3396,
+    #          743.2106, 406.41, 315.9192, 3196.5802, 1971.8329, 1185.5905, 671.7514, 1024.7438, 670.8203, 447.21,
+    #          316.2277, 752.9084, 458.30, 312.74, 206.02, 880.9085, 574.7446, 374.7, 249.52]
+    target = [911.4121, 598.8197, 389.3071, 258.2596, 19.3846, 9.3341, 5.5657, 2.9714, 3720.5511, 2326.4781, 1365.6501,
+              650.0001, 1610.1243, 850.0001, 514.7816, 316.2278, 1336.2729, 888.8358, 559.016995, 355.3168, 1101.3397,
+              743.2107, 501.8177, 315.9193, 3196.5803, 1971.83291, 1185.5906, 671.7515, 1024.7439, 670.8204, 454.8627,
+              316.2278, 752.9085, 458.3046, 318.5144, 207.3192, 880.9086, 584.75192, 375.49397, 255.9408]
 
 
     # Setting up the instance (BEGIN)***************************************************************
@@ -650,23 +669,30 @@ for v in range(1, 41):
                     cost = matrix[i][j] + matrix[i][l]
                 if cost < matrix[j][l]:
                     matrix[j][l] = cost
+    if v%4 == 0:
+        k = 5
+    if v%4 == 1:
+        k = 10
+    if v%4 == 2:
+        k = 20
+    if v%4 == 3:
+        k = 40
     f.close()
     # Setting up the instance (END)***************************************************************
 
-
-
-    # Order the set of possible solutions' size
+    # Order the set of possible solution sizes
     ordered_sizes = []
     for i in range(0, n):
         for j in range(i, n):
             ordered_sizes.append(matrix[i][j])
     ordered_sizes = heap_sort(ordered_sizes)
 
-
     # The algorithm can be executed over every instance any number of times with a different seed
     #print("*************************************************************************************************")
     #print("100 executions of pmed" + repr(v) + ": ")
+    # SdR-DS
     for h in range(0, 1):
+        #prob = 1 / (n ** (1/k))
         prob = 1
         max_iterations = n
         best_known_size = float("inf")
@@ -674,7 +700,6 @@ for v in range(1, 41):
         dominated = []
         distance = []
         random.seed(h)
-        # These variables are used by the Local Search method "Critical Interchange"
         F0 = []
         F1 = []
         D0 = []
@@ -682,6 +707,7 @@ for v in range(1, 41):
         M = []
         ds_time = 0
         ls_time = 0
+
         # A 2-approximated Gon solution is generated for evaluation
         list = gon()
         best_known_size = list[0]
@@ -693,6 +719,7 @@ for v in range(1, 41):
         lower = 0
         mid = math.floor(lower + ((upper - lower)/2))
         not_done = True
+
         while not_done:
             # Computing the mid value
             mid = math.floor(lower + ((upper - lower)/2))
@@ -712,7 +739,7 @@ for v in range(1, 41):
             if size <= best_known_size:
                 best_known_size = size
             # If the algorithm has already found the target, the algorithm has finished
-            if best_known_size <= target[v-1]:
+            if best_known_size <= target[v]:
                 break
             # This condition is met when the binary search finishes
             if lower == mid and upper == lower + 1:
@@ -730,7 +757,7 @@ for v in range(1, 41):
         #print(best_known_size)
 
         # Here starts the Structure-drven Randomization
-        max_iterations = 999999
+        max_iterations = 99999999999999999999999999999999999999999
         prob = 1 / (n ** (1/k))
         done = False
         while not done:
@@ -749,7 +776,7 @@ for v in range(1, 41):
                 # otherwise it can be commented
                 best_known_size = critical_interchange(C, best_known_size, size - epsilon)
                 ls_time = ls_time + (timeit.default_timer() - init_ls_time)
-            if best_known_size <= target[v-1]:
+            if best_known_size <= target[v]:
                 done = True
 
         # Here we are printing the execution time until reaching the target

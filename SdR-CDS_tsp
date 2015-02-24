@@ -313,7 +313,7 @@ def interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], j])
                     elif M[current_sol[m]] < C:
-                        L.clear()
+                        L = []
                         L.append([current_sol[m], j])
                         C = M[current_sol[m]]
             Sc = removeFacility(j, current_sol)
@@ -396,7 +396,7 @@ def critical_interchange(in_sol, bks, current_size):
                     if M[current_sol[m]] == C:
                         L.append([current_sol[m], critical_neighbors[j]])
                     elif M[current_sol[m]] < C:
-                        L.clear()
+                        L = []
                         L.append([current_sol[m], critical_neighbors[j]])
                         C = M[current_sol[m]]
             Sc = removeFacility(critical_neighbors[j], current_sol)
@@ -759,7 +759,8 @@ for v in range(0, 40):
         # Here starts the Structure-drven Randomization
         max_iterations = 99999999999999999999999999999999999999999
         prob = 1 / (n ** (1/k))
-        for i in range(0, max_iterations):
+        done = False
+        while not done:
             cardinality()
             init_ds_time = timeit.default_timer()
             epsilon = 1e-20
@@ -776,7 +777,7 @@ for v in range(0, 40):
                 best_known_size = critical_interchange(C, best_known_size, size - epsilon)
                 ls_time = ls_time + (timeit.default_timer() - init_ls_time)
             if best_known_size <= target[v]:
-                break
+                done = True
 
         # Here we are printing the execution time until reaching the target
         print( repr(ds_time + ls_time))
